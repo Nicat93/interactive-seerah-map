@@ -100,7 +100,7 @@
   // legend
   $("legend-items").innerHTML =
     Object.values(categories).map((c) => `<span style="--c:${c.color}"><i></i>${c.label}</span>`).join("") +
-    `<span><i class="tintsw"></i>Where Islam had reached</span>`;
+    `<span><i class="tintsw"></i>İslamın çatdığı yerlər</span>`;
 
   // ---------- camera ----------
   let size = { w: 1, h: 1 };
@@ -222,9 +222,9 @@
   // ---------- timeline ----------
   const scroller = $("scroller"), pad = $("pad"), track = $("track");
   const bands = [
-    { from: START, to: 610.6, label: "Early life", color: "#d9c58a" },
-    { from: 610.6, to: 622.7, label: "Makkan period", color: "#8fc5b8" },
-    { from: 622.7, to: END, label: "Madinan period", color: "#8ed1a0" },
+    { from: START, to: 610.6, label: "Erkən həyat", color: "#d9c58a" },
+    { from: 610.6, to: 622.7, label: "Məkkə dövrü", color: "#8fc5b8" },
+    { from: 622.7, to: END, label: "Mədinə dövrü", color: "#8ed1a0" },
   ];
   let ppy = 90;
   const AXIS_Y = 142, ROW_TOP = [26, 50, 74, 98];
@@ -249,7 +249,7 @@
     }
     const h = mkEl("div", "tl-hijra", track);
     h.style.left = X(622.54) + "px";
-    mkEl("span", "", h).textContent = "1 AH · Hijri calendar begins";
+    mkEl("span", "", h).textContent = "h. 1 · Hicri təqvimin başlanğıcı";
 
     const rowEnd = ROW_TOP.map(() => -1e9);
     for (const e of events) {
@@ -280,15 +280,15 @@
 
   // ---------- state ----------
   let year = START, activeIndex = -1;
-  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const MONTHS = ["yan", "fev", "mar", "apr", "may", "iyn", "iyl", "avq", "sen", "okt", "noy", "dek"];
   const HIJRA_Y = 622.54;
   const fmtYear = (y) => {
     const m = MONTHS[Math.min(11, Math.floor((y % 1) * 12))];
-    return (y < 622 ? "c. " : "") + `${m} ${Math.floor(y)} CE`;
+    return (y < 622 ? "təxm. " : "") + `${m} ${Math.floor(y)}`;
   };
   const fmtHijri = (y) => {
     const d = ((y - HIJRA_Y) * 365.25) / 354.37;
-    return d >= 0 ? `${Math.floor(d) + 1} AH` : `${Math.max(1, Math.floor(-d))} BH`;
+    return d >= 0 ? `h. ${Math.floor(d) + 1}` : `hicrətdən ${Math.max(1, Math.floor(-d))} il əvvəl`;
   };
   const ageAt = (y) => Math.floor(((y - START) / (END - START)) * 63);
 
@@ -304,7 +304,7 @@
     $("card-chip").innerHTML = `<i><svg viewBox="0 0 24 24"><use href="#${cat.icon}"/></svg></i>${cat.label}`;
     $("card-title").textContent = e.title;
     $("card-date").textContent = e.date;
-    $("card-meta").textContent = `${places[e.place].name} · age ${ageAt(e.year)}`;
+    $("card-meta").textContent = `${places[e.place].name} · ${ageAt(e.year)} yaş`;
     $("card-text").textContent = e.text;
     card.classList.remove("swap"); void card.offsetWidth; card.classList.add("swap");
     card.scrollTop = 0;
@@ -314,7 +314,7 @@
     const idx = indexAt(year);
     $("ro-year").textContent = fmtYear(year);
     $("ro-hijri").textContent = fmtHijri(year);
-    $("ro-age").textContent = `Age ${ageAt(year)}`;
+    $("ro-age").textContent = `${ageAt(year)} yaş`;
 
     // tint
     regions.forEach((r, i) => {
@@ -434,13 +434,13 @@
     if (year >= END - 0.01) { scroller.scrollLeft = 0; year = START; }
     pos = scroller.scrollLeft; lastIdx = indexAt(year); holdUntil = 0; last = performance.now();
     playing = true;
-    $("play").innerHTML = "&#10074;&#10074;"; $("play").setAttribute("aria-label", "Pause");
+    $("play").innerHTML = "&#10074;&#10074;"; $("play").setAttribute("aria-label", "Dayandır");
     raf = requestAnimationFrame(tick);
   }
   function stopPlay() {
     if (!playing) return;
     playing = false; cancelAnimationFrame(raf);
-    $("play").innerHTML = "&#9654;"; $("play").setAttribute("aria-label", "Play");
+    $("play").innerHTML = "&#9654;"; $("play").setAttribute("aria-label", "Oynat");
   }
   $("play").onclick = () => (playing ? stopPlay() : startPlay());
   $("speed").onclick = () => { mult = mult === 1 ? 2 : mult === 2 ? 4 : 1; $("speed").innerHTML = mult + "&times;"; };

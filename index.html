@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="az">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Interactive Seerah Map</title>
-  <meta name="description" content="An interactive timeline and map of the life of Prophet Muhammad ﷺ, from his birth in Mecca (570 CE) to his passing in Medina (632 CE).">
+  <title>İnteraktiv Siyər Xəritəsi</title>
+  <meta name="description" content="Həzrət Məhəmmədin (s.ə.s.) həyatının doğumundan (570, Məkkə) vəfatına (632, Mədinə) qədər interaktiv zaman xətti və xəritəsi.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f855a'/%3E%3Cpath d='M19 6a10 10 0 1 0 0 20 8 8 0 0 1 0-20z' fill='%23fff'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -22,8 +22,8 @@
   </svg>
 
   <header class="top">
-    <h1>Interactive Seerah Map</h1>
-    <p>The life of the Prophet Muhammad <bdi>ﷺ</bdi> &middot; 570&ndash;632 CE</p>
+    <h1>İnteraktiv Siyər Xəritəsi</h1>
+    <p>Həzrət Məhəmmədin (s.ə.s.) həyatı &middot; miladi 570&ndash;632</p>
   </header>
 
   <main class="stage">
@@ -33,11 +33,11 @@
       <p class="card-date" id="card-date"></p>
       <p class="card-meta" id="card-meta"></p>
       <p class="card-text" id="card-text"></p>
-      <p class="card-note">Dates before the Hijra are approximate; scholars differ on some of them.</p>
+      <p class="card-note">Hicrətdən əvvəlki tarixlər təxminidir; alimlər bəzi tarixlərdə fərqli fikirdədirlər.</p>
     </aside>
 
     <section class="map-wrap" id="map-wrap">
-      <svg id="map" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map of Arabia showing events of the Seerah">
+      <svg id="map" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Siyər hadisələrini göstərən Ərəbistan xəritəsi">
         <defs>
           <clipPath id="land-clip"><path id="land-clip-path"/></clipPath>
           <filter id="soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="7"/></filter>
@@ -51,28 +51,28 @@
         <g id="markers"></g>
       </svg>
 
-      <details class="legend" id="legend"><summary>Legend</summary><div class="items" id="legend-items"></div></details>
-      <div class="zoom" role="group" aria-label="Map zoom">
-        <button id="zoom-in" aria-label="Zoom in">+</button>
-        <button id="zoom-out" aria-label="Zoom out">&minus;</button>
-        <button id="zoom-auto" aria-label="Follow the timeline" title="Follow the timeline" class="on">&#9678;</button>
+      <details class="legend" id="legend"><summary>Şərti işarələr</summary><div class="items" id="legend-items"></div></details>
+      <div class="zoom" role="group" aria-label="Xəritənin miqyası">
+        <button id="zoom-in" aria-label="Yaxınlaşdır">+</button>
+        <button id="zoom-out" aria-label="Uzaqlaşdır">&minus;</button>
+        <button id="zoom-auto" aria-label="Zaman xəttini izlə" title="Zaman xəttini izlə" class="on">&#9678;</button>
       </div>
     </section>
   </main>
 
-  <section class="timeline" aria-label="Timeline">
+  <section class="timeline" aria-label="Zaman xətti">
     <div class="tl-bar">
       <div class="tl-controls">
-        <button id="prev" aria-label="Previous event">&#9664;&#9664;</button>
-        <button id="play" aria-label="Play">&#9654;</button>
-        <button id="next" aria-label="Next event">&#9654;&#9654;</button>
-        <button id="speed" aria-label="Playback speed">1&times;</button>
+        <button id="prev" aria-label="Əvvəlki hadisə">&#9664;&#9664;</button>
+        <button id="play" aria-label="Oynat">&#9654;</button>
+        <button id="next" aria-label="Növbəti hadisə">&#9654;&#9654;</button>
+        <button id="speed" aria-label="Oynatma sürəti">1&times;</button>
       </div>
       <div class="tl-readout"><strong id="ro-year"></strong><span id="ro-hijri"></span><span id="ro-age"></span></div>
-      <div class="tl-hint">Drag the timeline &larr; &rarr;</div>
+      <div class="tl-hint">Zaman xəttini sürüşdürün &larr; &rarr;</div>
     </div>
     <div class="tl-view">
-      <div class="tl-scroller" id="scroller" tabindex="0" aria-label="Drag or scroll to move through time">
+      <div class="tl-scroller" id="scroller" tabindex="0" aria-label="Zamanda irəliləmək üçün sürüşdürün">
         <div class="tl-pad" id="pad"><div class="tl-track" id="track"></div></div>
       </div>
       <div class="tl-playhead" aria-hidden="true"></div>
