@@ -1,0 +1,222 @@
+// Seerah data. Coordinates are [lon, lat]. Years are fractional CE years
+// (e.g. 622.73 ~ late September 622). Dates before the Hijra are approximate
+// and follow the commonly cited chronology; scholars differ on several of them.
+window.SEERAH = window.SEERAH || {};
+
+// Keep in sync with tools/build-land.mjs.
+SEERAH.PROJ = { lon0: 31, lat1: 35, lon1: 61, lat0: 10, scale: 40, lat: 23 };
+
+
+// Event categories: colour + icon id (see <symbol>s in index.html).
+SEERAH.categories = {
+  life:       { label: "Life & family",   color: "#b7791f", icon: "i-heart" },
+  revelation: { label: "Revelation",      color: "#2f855a", icon: "i-book" },
+  hardship:   { label: "Hardship",        color: "#718096", icon: "i-drop" },
+  migration:  { label: "Journey / Hijra", color: "#2b6cb0", icon: "i-arrow" },
+  community:  { label: "Community",       color: "#6b46c1", icon: "i-dome" },
+  battle:     { label: "Battle",          color: "#c53030", icon: "i-swords" },
+  treaty:     { label: "Treaty & envoys", color: "#0987a0", icon: "i-scroll" },
+  pilgrimage: { label: "Pilgrimage",      color: "#2f855a", icon: "i-kaaba" },
+};
+
+SEERAH.places = {
+  mecca:    { name: "Mecca",    ll: [39.826, 21.423] },
+  medina:   { name: "Medina",   ll: [39.612, 24.468] },
+  taif:     { name: "Ta'if",    ll: [40.416, 21.270] },
+  badr:     { name: "Badr",     ll: [38.79, 23.74] },
+  uhud:     { name: "Uhud",     ll: [39.62, 24.50] },
+  khaybar:  { name: "Khaybar",  ll: [39.30, 25.70] },
+  tabuk:    { name: "Tabuk",    ll: [36.57, 28.38] },
+  hira:     { name: "Cave of Hira", ll: [39.859, 21.457] },
+  arafat:   { name: "Arafat",   ll: [39.984, 21.355] },
+  hudaybiyyah: { name: "Hudaybiyyah", ll: [39.62, 21.43] },
+  hunayn:   { name: "Hunayn",   ll: [40.35, 21.45] },
+  mutah:    { name: "Mu'tah",   ll: [35.70, 31.30] },
+  busra:    { name: "Busra",    ll: [36.48, 32.52] },
+  aksum:    { name: "Aksum",    ll: [38.72, 14.12] },
+  jerusalem:{ name: "Jerusalem",ll: [35.23, 31.78] },
+  abwa:     { name: "Al-Abwa'", ll: [39.0, 23.2] },
+  sanaa:    { name: "Sana'a",   ll: [44.21, 15.35] },
+  najran:   { name: "Najran",   ll: [44.13, 17.49] },
+};
+
+// Map labels (not events): cities, seas and neighbouring powers.
+SEERAH.labels = [
+  { t: "Red Sea",          ll: [36.6, 19.8], cls: "sea", rot: 52 },
+  { t: "Persian Gulf",     ll: [51.2, 27.0], cls: "sea", rot: -28 },
+  { t: "Arabian Sea",      ll: [57.5, 14.0], cls: "sea" },
+  { t: "Gulf of Aden",     ll: [47.5, 12.3], cls: "sea" },
+  { t: "ARABIA",           ll: [46.5, 23.8], cls: "land" },
+  { t: "Byzantine Syria",  ll: [38.0, 33.8], cls: "power" },
+  { t: "Sasanian Empire",  ll: [48.5, 33.5], cls: "power" },
+  { t: "Egypt",            ll: [32.6, 27.2], cls: "power" },
+  { t: "Kingdom of Aksum", ll: [37.6, 12.0], cls: "power" },
+  { t: "Yemen",            ll: [45.6, 14.0], cls: "region" },
+  { t: "Oman",             ll: [57.2, 21.0], cls: "region" },
+  { t: "Najd",             ll: [44.0, 26.0], cls: "region" },
+  { t: "Hijaz",            ll: [40.9, 23.2], cls: "region" },
+  { t: "Bahrain",          ll: [49.8, 25.6], cls: "region" },
+  { t: "Hadramawt",        ll: [49.6, 16.6], cls: "region" },
+  { t: "Ctesiphon",        ll: [44.58, 33.09], cls: "city" },
+  { t: "Damascus",         ll: [36.29, 33.51], cls: "city" },
+  { t: "Najran",           ll: [44.13, 17.49], cls: "city" },
+  { t: "Sana'a",           ll: [44.21, 15.35], cls: "city" },
+  { t: "Ta'if",            ll: [40.416, 21.27], cls: "city" },
+  { t: "Mecca",            ll: [39.826, 21.423], cls: "city" },
+  { t: "Medina",           ll: [39.612, 24.468], cls: "city" },
+  { t: "Aksum",            ll: [38.72, 14.12], cls: "city" },
+  { t: "Jerusalem",        ll: [35.23, 31.78], cls: "city" },
+];
+
+// Events. `route` (optional) is drawn progressively between `from` and `to`.
+SEERAH.events = [
+  { id: "birth", year: 570.3, date: "c. 12 Rabi' al-Awwal, Year of the Elephant", cat: "life", place: "mecca",
+    title: "Birth of the Prophet ﷺ",
+    text: "Muhammad ﷺ, son of 'Abdullah and Aminah of the Banu Hashim of Quraysh, is born in Mecca in the Year of the Elephant, the year Abraha's army turned back from the Ka'bah. His father had died before his birth." },
+  { id: "abwa", year: 576.5, date: "c. 576", cat: "hardship", place: "abwa",
+    title: "Death of his mother Aminah",
+    text: "Returning from a visit to relatives in Medina, Aminah dies at al-Abwa'. The six-year-old orphan is cared for by his grandfather 'Abd al-Muttalib, and after his death (c. 578) by his uncle Abu Talib.",
+    route: { pts: [[39.826, 21.423], [39.7, 22.3], [39.0, 23.2]], from: 576.0, to: 576.5 } },
+  { id: "bahira", year: 582.3, date: "c. 582", cat: "migration", place: "busra",
+    title: "Caravan to Syria with Abu Talib",
+    text: "At about twelve years old he travels with his uncle's trade caravan to Syria. At Busra the monk Bahira is said to have recognised signs of prophethood in him.",
+    route: { pts: [[39.826, 21.423], [39.6, 24.468], [37.2, 27.6], [36.57, 28.38], [36.48, 32.52]], from: 581.7, to: 582.3 } },
+  { id: "khadijah", year: 595.5, date: "c. 595", cat: "life", place: "mecca",
+    title: "Marriage to Khadijah",
+    text: "Known in Mecca as al-Sadiq al-Amin (the truthful, the trustworthy), he leads Khadijah bint Khuwaylid's trade caravan to Syria. Impressed by his character, she proposes marriage. He is about twenty-five; she is the first of his wives and the mother of most of his children." },
+  { id: "kaaba", year: 605.4, date: "c. 605", cat: "life", place: "mecca",
+    title: "Rebuilding the Ka'bah",
+    text: "When the Quraysh quarrel over who should replace the Black Stone during the Ka'bah's reconstruction, they accept his arbitration. He lays it on a cloak so every clan can lift it together." },
+  { id: "hira", year: 610.6, date: "17 or 21 Ramadan, c. 610", cat: "revelation", place: "hira",
+    title: "First revelation",
+    text: "While in retreat in the Cave of Hira on Jabal al-Nur, the angel Jibril comes to him with the first verses of Surah al-'Alaq: \"Read in the name of your Lord who created.\" Khadijah, 'Ali, Zayd and Abu Bakr are among the first to believe." },
+  { id: "public", year: 613.3, date: "c. 3 years after revelation", cat: "revelation", place: "mecca",
+    title: "Public call to Islam",
+    text: "After three years of private invitation, he is commanded to proclaim the message openly and climbs Mount Safa to call the Quraysh. Opposition and persecution of the early Muslims begin." },
+  { id: "abyssinia", year: 615.5, date: "Rajab, 5 years before the Hijra", cat: "migration", place: "aksum",
+    title: "First migration to Abyssinia",
+    text: "To escape persecution, a group of Muslims led by Ja'far ibn Abi Talib and including 'Uthman and Ruqayyah crosses the Red Sea. The just Negus of Aksum shelters them and refuses Quraysh demands to return them.",
+    route: { pts: [[39.826, 21.423], [39.2, 20.8], [38.0, 19.0], [38.9, 16.0], [38.72, 14.12]], from: 615.2, to: 615.7 } },
+  { id: "boycott", year: 617.0, date: "c. 616–619", cat: "hardship", place: "mecca",
+    title: "Boycott of Banu Hashim",
+    text: "The Quraysh sign a pact to boycott Banu Hashim and Banu al-Muttalib, who are confined to the valley of Abu Talib for about three years, until the pact is found eaten away and is annulled." },
+  { id: "sorrow", year: 619.9, date: "c. 10 years after revelation", cat: "hardship", place: "mecca",
+    title: "Year of Sorrow",
+    text: "Within a short time he loses both his beloved wife Khadijah and his protector, his uncle Abu Talib. The Quraysh intensify their persecution." },
+  { id: "taif", year: 620.2, date: "Shawwal, c. 10 NT", cat: "hardship", place: "taif",
+    title: "Invitation to Ta'if",
+    text: "He travels to Ta'if to invite Thaqif to Islam but is rejected and driven out. Offered revenge by the angel of the mountains, he instead prays for their descendants to worship Allah alone.",
+    route: { pts: [[39.826, 21.423], [40.1, 21.35], [40.416, 21.27]], from: 620.1, to: 620.2 } },
+  { id: "isra", year: 621.1, date: "27 Rajab, c. 621", cat: "revelation", place: "jerusalem",
+    title: "Al-Isra' wal-Mi'raj",
+    text: "In a single night he is taken from the Sacred Mosque in Mecca to al-Aqsa in Jerusalem, and then ascends through the heavens, where the five daily prayers are prescribed.",
+    route: { pts: [[39.826, 21.423], [37.6, 26.0], [35.23, 31.78]], from: 621.05, to: 621.1 } },
+  { id: "aqaba", year: 621.5, date: "Hajj seasons of 621 and 622", cat: "treaty", place: "mecca",
+    title: "Pledges of 'Aqabah",
+    text: "Pilgrims from Yathrib (Medina) of the Aws and Khazraj pledge to protect him as they would their own families. Mus'ab ibn 'Umayr is sent to teach them, and Islam spreads quickly through Medina." },
+  { id: "hijra", year: 622.7, date: "Rabi' al-Awwal, 1 AH", cat: "migration", place: "medina",
+    title: "The Hijra to Medina",
+    text: "Warned of a Quraysh plot, he leaves Mecca with Abu Bakr, shelters three days in the Cave of Thawr, and travels to Quba and then Medina, where he is welcomed by the Ansar. The Islamic calendar counts from this year.",
+    route: { pts: [[39.826, 21.423], [39.85, 21.35], [39.3, 21.8], [39.1, 22.9], [39.45, 24.4], [39.612, 24.468]], from: 622.5, to: 622.73 } },
+  { id: "constitution", year: 623.0, date: "1–2 AH", cat: "community", place: "medina",
+    title: "Constitution of Medina & the Prophet's Mosque",
+    text: "He builds the Prophet's Mosque, establishes brotherhood between the Muhajirun and Ansar, and agrees a charter binding Muslims, Jews and others of Medina into one community with mutual defence." },
+  { id: "qibla", year: 624.1, date: "Rajab/Sha'ban, 2 AH", cat: "community", place: "medina",
+    title: "Change of the Qiblah",
+    text: "While leading prayer, the direction of prayer is changed from Jerusalem to the Ka'bah in Mecca." },
+  { id: "badr", year: 624.2, date: "17 Ramadan, 2 AH", cat: "battle", place: "badr",
+    title: "Battle of Badr",
+    text: "About 313 Muslims meet a Meccan army of roughly a thousand at the wells of Badr. The Muslims are victorious in the first major battle of Islam.",
+    route: { pts: [[39.612, 24.468], [39.2, 24.1], [38.79, 23.74]], from: 624.15, to: 624.2 } },
+  { id: "uhud", year: 625.2, date: "Shawwal, 3 AH", cat: "battle", place: "uhud",
+    title: "Battle of Uhud",
+    text: "The Quraysh march on Medina to avenge Badr. The Muslims are close to victory until the archers leave their post on the hill, and the battle turns. The Prophet ﷺ is wounded, and Hamzah is martyred." },
+  { id: "khandaq", year: 627.15, date: "Shawwal, 5 AH", cat: "battle", place: "medina",
+    title: "Battle of the Trench",
+    text: "An alliance of Quraysh, Ghatafan and others besieges Medina with ten thousand men. Following Salman al-Farisi's advice, the Muslims dig a trench around the city's open side, and the confederates withdraw after weeks of siege and a fierce storm." },
+  { id: "hudaybiyyah", year: 628.2, date: "Dhu al-Qa'dah, 6 AH", cat: "treaty", place: "hudaybiyyah",
+    title: "Treaty of Hudaybiyyah",
+    text: "Marching to Mecca for 'Umrah, he is stopped at Hudaybiyyah. After the Pledge of Ridwan, a ten-year truce is agreed with the Quraysh. The Qur'an calls it a clear victory: Islam spreads rapidly during the peace.",
+    route: { pts: [[39.612, 24.468], [39.3, 23.0], [39.62, 21.43]], from: 628.1, to: 628.2 } },
+  { id: "khaybar", year: 628.45, date: "Muharram, 7 AH", cat: "battle", place: "khaybar",
+    title: "Khaybar & letters to rulers",
+    text: "The Muslims take the fortified oasis of Khaybar. Around this time he sends letters inviting the Byzantine emperor, the Sasanian emperor, the Negus and others to Islam.",
+    route: { pts: [[39.612, 24.468], [39.45, 25.1], [39.30, 25.70]], from: 628.4, to: 628.45 } },
+  { id: "umra", year: 629.2, date: "Dhu al-Qa'dah, 7 AH", cat: "pilgrimage", place: "mecca",
+    title: "'Umrat al-Qada'",
+    text: "In fulfilment of the treaty, the Muslims enter Mecca peacefully and perform the 'Umrah they were denied the year before, then leave after three days." },
+  { id: "mutah", year: 629.7, date: "Jumada al-Awwal, 8 AH", cat: "battle", place: "mutah",
+    title: "Battle of Mu'tah",
+    text: "A Muslim force sent to the Syrian frontier meets a much larger Byzantine and allied Arab army at Mu'tah. Zayd ibn Harithah, Ja'far and 'Abdullah ibn Rawahah fall in turn, and Khalid ibn al-Walid leads an orderly withdrawal.",
+    route: { pts: [[39.612, 24.468], [37.5, 27.6], [36.0, 29.6], [35.70, 31.30]], from: 629.55, to: 629.7 } },
+  { id: "fath", year: 630.05, date: "Ramadan, 8 AH", cat: "pilgrimage", place: "mecca",
+    title: "Conquest of Mecca",
+    text: "After the Quraysh break the truce, ten thousand Muslims march on Mecca. He enters almost without fighting, cleanses the Ka'bah of its idols, and grants a general amnesty: \"Go, for you are free.\"",
+    route: { pts: [[39.612, 24.468], [39.3, 23.0], [39.6, 21.9], [39.826, 21.423]], from: 629.95, to: 630.05 } },
+  { id: "hunayn", year: 630.1, date: "Shawwal, 8 AH", cat: "battle", place: "hunayn",
+    title: "Battle of Hunayn & siege of Ta'if",
+    text: "The tribes of Hawazin and Thaqif ambush the Muslim army in the valley of Hunayn. After an initial setback the Muslims rally and win. Ta'if is then besieged; its people accept Islam the following year." },
+  { id: "tabuk", year: 630.8, date: "Rajab, 9 AH", cat: "battle", place: "tabuk",
+    title: "Expedition to Tabuk",
+    text: "Learning of Byzantine forces gathering in the north, he leads about thirty thousand men in the heat of summer to Tabuk. There is no battle, but the northern tribes and the rulers of Ayla and Dumat al-Jandal make peace.",
+    route: { pts: [[39.612, 24.468], [38.0, 26.5], [36.57, 28.38]], from: 630.6, to: 630.8 } },
+  { id: "delegations", year: 631.3, date: "9–10 AH, the Year of Delegations", cat: "treaty", place: "medina",
+    title: "Year of Delegations",
+    text: "Deputations from tribes across Arabia, including Thaqif, Najran, Bahrain and Oman, come to Medina. Envoys such as Mu'adh ibn Jabal and 'Ali are sent to Yemen, and Islam spreads through the whole peninsula.",
+    route: { pts: [[39.612, 24.468], [42.0, 22.5], [44.13, 17.49], [44.21, 15.35]], from: 631.0, to: 631.6 } },
+  { id: "farewell", year: 632.2, date: "9 Dhu al-Hijjah, 10 AH", cat: "pilgrimage", place: "arafat",
+    title: "The Farewell Pilgrimage",
+    text: "He leads the only Hajj of his life with well over a hundred thousand Muslims. At 'Arafat he delivers the Farewell Sermon on the sanctity of life and property, justice, and holding fast to the Book of Allah. The verse \"This day I have perfected your religion for you\" is revealed.",
+    route: { pts: [[39.612, 24.468], [39.3, 23.0], [39.6, 21.9], [39.984, 21.355]], from: 632.0, to: 632.2 } },
+  { id: "death", year: 632.43, date: "12 Rabi' al-Awwal, 11 AH (8 June 632)", cat: "community", place: "medina",
+    title: "Passing of the Prophet ﷺ",
+    text: "After a brief illness, the Messenger of Allah ﷺ passes away in Medina at about sixty-three years old, in the room of 'A'ishah. Abu Bakr reminds the grieving Muslims: \"Whoever worshipped Muhammad, Muhammad has died; whoever worships Allah, Allah is ever-living and never dies.\"" },
+];
+
+SEERAH.START = SEERAH.events[0].year;                        // birth
+SEERAH.END = SEERAH.events[SEERAH.events.length - 1].year;   // passing
+
+// Short names for the timeline.
+const SHORT = {
+  birth: "Birth", abwa: "Death of Aminah", bahira: "Syria caravan", khadijah: "Marriage to Khadijah",
+  kaaba: "Rebuilding the Ka'bah", hira: "First revelation", public: "Public call", abyssinia: "Migration to Abyssinia",
+  boycott: "Boycott", sorrow: "Year of Sorrow", taif: "Ta'if", isra: "Isra' & Mi'raj", aqaba: "Pledges of 'Aqabah",
+  hijra: "Hijra", constitution: "Constitution of Medina", qibla: "Change of Qiblah", badr: "Badr", uhud: "Uhud",
+  khandaq: "The Trench", hudaybiyyah: "Hudaybiyyah", khaybar: "Khaybar", umra: "'Umrat al-Qada'", mutah: "Mu'tah",
+  fath: "Conquest of Mecca", hunayn: "Hunayn", tabuk: "Tabuk", delegations: "Year of Delegations",
+  farewell: "Farewell Pilgrimage", death: "Passing of the Prophet ﷺ",
+};
+SEERAH.events.forEach((e) => { e.short = SHORT[e.id] || e.title; });
+
+// Areas tinted green as Islam reaches them. Shapes are rough, hand-drawn
+// polygons ([lon, lat]) or ellipses, clipped to land and softly blurred.
+// `from` is when the tint starts to fade in; it is fully in after `fade` years.
+const ell = (cx, cy, rx, ry, n = 28) =>
+  Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * 2 * Math.PI;
+    return [cx + rx * Math.cos(a), cy + ry * Math.sin(a)];
+  });
+
+SEERAH.regions = [
+  { id: "mecca", name: "Mecca", from: 610.6, fade: 1.5, poly: ell(39.8, 21.4, 0.9, 0.8) },
+  { id: "aksum", name: "Aksum (refuge in Abyssinia)", from: 615.5, fade: 1, poly: ell(38.9, 14.4, 2.1, 2.0) },
+  { id: "medina", name: "Medina", from: 621.8, fade: 1, poly: ell(39.6, 24.5, 1.5, 1.3) },
+  { id: "hijaz", name: "Hijaz & Khaybar", from: 628.2, fade: 1.5,
+    poly: [[36.8, 27.6], [39.5, 27.7], [41.6, 26.6], [42.3, 24], [42, 21.4], [40.8, 19.8], [39.2, 19.8], [38, 21.5], [37, 24], [36.6, 26]] },
+  { id: "tihama", name: "Ta'if & Hawazin lands", from: 630.1, fade: 1,
+    poly: [[39.2, 19.8], [40.8, 19.8], [42.3, 21.4], [43.8, 21.6], [43.8, 18.6], [42.6, 17.1], [41, 16.6], [40, 18]] },
+  { id: "north", name: "Northern Arabia (Tabuk, Ayla, Dumat al-Jandal)", from: 630.8, fade: 1,
+    poly: [[34.8, 29.8], [36, 31], [39, 31.6], [40.8, 30.4], [41.6, 28.4], [39.5, 27.7], [36.8, 27.6], [34.8, 28]] },
+  { id: "najd", name: "Najd", from: 630.9, fade: 1.2,
+    poly: [[41.4, 28.4], [44, 28.8], [47, 27.6], [48, 25.2], [47.6, 22.6], [45, 21.2], [43.8, 21.6], [42.3, 24], [41.6, 26.6]] },
+  { id: "bahrain", name: "Eastern Arabia (Bahrain)", from: 631.0, fade: 1,
+    poly: [[47, 27.6], [49.8, 27.2], [51.7, 25.6], [52, 24.2], [51.6, 22], [48, 21.2], [47.6, 22.6], [48, 25.2]] },
+  { id: "najran", name: "Najran & southern Najd", from: 631.2, fade: 1,
+    poly: [[43.8, 21.6], [45, 21.2], [47.6, 22.6], [48, 21.2], [51, 20.6], [52, 18.6], [48, 18.9], [46, 19.2], [43.8, 18.6]] },
+  { id: "yemen", name: "Yemen", from: 631.4, fade: 1,
+    poly: [[42.5, 17.2], [43.8, 18.6], [46, 19.2], [48, 18.9], [49.2, 17.2], [47, 15], [45, 12.8], [43.2, 12.6], [42.6, 14.8]] },
+  { id: "oman", name: "Oman", from: 631.5, fade: 1,
+    poly: [[52, 24.2], [54, 24.4], [56.3, 26.4], [56.9, 25], [59.9, 22.6], [58.2, 19.5], [55.5, 17.2], [52.3, 18.2], [52, 21], [51.6, 22]] },
+  { id: "hadramawt", name: "Hadramawt & Mahra", from: 631.7, fade: 1,
+    poly: [[48, 18.9], [52, 18.6], [52.4, 16.4], [49.4, 14.4], [47, 15], [49.2, 17.2]] },
+];

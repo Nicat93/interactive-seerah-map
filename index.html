@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Interactive Seerah Map</title>
+  <meta name="description" content="An interactive timeline and map of the life of Prophet Muhammad ﷺ, from his birth in Mecca (570 CE) to his passing in Medina (632 CE).">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f855a'/%3E%3Cpath d='M19 6a10 10 0 1 0 0 20 8 8 0 0 1 0-20z' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Icon sprite -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.8a4.3 4.3 0 0 1 7.5 2.7c0 5.4-7.5 10-7.5 10z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M3 6.5c3-1.4 6-1.4 9 .8 3-2.2 6-2.2 9-.8v12c-3-1.4-6-1.4-9 .8-3-2.2-6-2.2-9-.8z"/><path d="M12 7.3v12" stroke="var(--ic-bg)" stroke-width="1.4" fill="none"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M3.5 9.5h9V5l8 7-8 7v-4.5h-9z"/></symbol>
+    <symbol id="i-dome" viewBox="0 0 24 24"><path d="M4.5 20v-4.5C4.5 11.5 8 8 12 8s7.5 3.5 7.5 7.5V20z"/><rect x="11.2" y="3" width="1.6" height="5.5"/></symbol>
+    <symbol id="i-swords" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M6 5l12 12M18 5L6 17M16 19l4-4M4 15l4 4"/></g></symbol>
+    <symbol id="i-scroll" viewBox="0 0 24 24"><path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M8.5 9h7M8.5 12.5h7M8.5 16h4" stroke="var(--ic-bg)" stroke-width="1.6" stroke-linecap="round" fill="none"/></symbol>
+    <symbol id="i-kaaba" viewBox="0 0 24 24"><path d="M4 8l8-3 8 3v11l-8 2-8-2z"/><path d="M4 11.8l8-2.6 8 2.6" stroke="var(--ic-bg)" stroke-width="1.6" fill="none"/></symbol>
+  </svg>
+
+  <header class="top">
+    <h1>Interactive Seerah Map</h1>
+    <p>The life of the Prophet Muhammad <bdi>ﷺ</bdi> &middot; 570&ndash;632 CE</p>
+  </header>
+
+  <main class="stage">
+    <aside class="card" id="card" aria-live="polite">
+      <div class="card-chip" id="card-chip"></div>
+      <h2 id="card-title"></h2>
+      <p class="card-date" id="card-date"></p>
+      <p class="card-meta" id="card-meta"></p>
+      <p class="card-text" id="card-text"></p>
+      <p class="card-note">Dates before the Hijra are approximate; scholars differ on some of them.</p>
+    </aside>
+
+    <section class="map-wrap" id="map-wrap">
+      <svg id="map" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map of Arabia showing events of the Seerah">
+        <defs>
+          <clipPath id="land-clip"><path id="land-clip-path"/></clipPath>
+          <filter id="soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="7"/></filter>
+        </defs>
+        <rect id="sea" class="sea"/>
+        <path id="land" class="land"/>
+        <g clip-path="url(#land-clip)"><g id="tint" filter="url(#soft)"></g></g>
+        <path id="coast" class="coast"/>
+        <g id="routes"></g>
+        <g id="labels"></g>
+        <g id="markers"></g>
+      </svg>
+
+      <details class="legend" id="legend"><summary>Legend</summary><div class="items" id="legend-items"></div></details>
+      <div class="zoom" role="group" aria-label="Map zoom">
+        <button id="zoom-in" aria-label="Zoom in">+</button>
+        <button id="zoom-out" aria-label="Zoom out">&minus;</button>
+        <button id="zoom-auto" aria-label="Follow the timeline" title="Follow the timeline" class="on">&#9678;</button>
+      </div>
+    </section>
+  </main>
+
+  <section class="timeline" aria-label="Timeline">
+    <div class="tl-bar">
+      <div class="tl-controls">
+        <button id="prev" aria-label="Previous event">&#9664;&#9664;</button>
+        <button id="play" aria-label="Play">&#9654;</button>
+        <button id="next" aria-label="Next event">&#9654;&#9654;</button>
+        <button id="speed" aria-label="Playback speed">1&times;</button>
+      </div>
+      <div class="tl-readout"><strong id="ro-year"></strong><span id="ro-hijri"></span><span id="ro-age"></span></div>
+      <div class="tl-hint">Drag the timeline &larr; &rarr;</div>
+    </div>
+    <div class="tl-view">
+      <div class="tl-scroller" id="scroller" tabindex="0" aria-label="Drag or scroll to move through time">
+        <div class="tl-pad" id="pad"><div class="tl-track" id="track"></div></div>
+      </div>
+      <div class="tl-playhead" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <script src="js/land.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "interactive-seerah-map",
+  "private": true,
+  "description": "Interactive timeline and map of the Seerah of Prophet Muhammad (peace be upon him)",
+  "scripts": {
+    "build:map": "node tools/build-land.mjs"
+  },
+  "devDependencies": {
+    "topojson-client": "3.1.0",
+    "world-atlas": "2.0.2"
+  }
+}
